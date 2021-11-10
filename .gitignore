@@ -2,3 +2,4 @@ client/temp
 client/local
 client/packages
 client/library
+.vscode

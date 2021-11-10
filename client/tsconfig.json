@@ -6,14 +6,8 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "outDir": "temp/vscode-dist",
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
-    "esModuleInterop": true,
-    // "types": ["colyseus"]
+    "forceConsistentCasingInFileNames": true
   },
-  // "include": [
-  //   "assets/**/*",
-  // ],
   "exclude": [
     "node_modules",
     "library",
@@ -21,5 +15,5 @@
     "temp",
     "build",
     "settings"
-  ],
+  ]
 }

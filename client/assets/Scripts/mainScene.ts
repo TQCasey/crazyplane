@@ -1,6 +1,8 @@
 
 const {ccclass, property} = cc._decorator;
 
+import EventMgr from './event/eventMgr';
+
 import mapdata from './map/mapInfo'
 import Prop     from './prop/prop'
 import Plane    from './plane/plane'
@@ -102,16 +104,17 @@ export default class mainScene extends cc.Component {
     
     // LIFE-CYCLE CALLBACKS:
 
-    mutexShow (name : String) {
+    showContentByName (name : String,showPlane : boolean = true) {
         this.operatePanel.active = 'operate' == name;
         this.startNode.active  = 'start' == name;
+
         this.pauseNode.active   = 'pause' == name;
         this.rankNode.active    = 'rank' == name;
         this.endNode.active     = 'end' == name;
 
         // plane
         if (this.myPlane) {
-            this.myPlane.active = 'operate' == name;
+            this.myPlane.active = showPlane;
         }
 
         this.isPaused = 'operate' != name;
@@ -142,7 +145,7 @@ export default class mainScene extends cc.Component {
         this.myPlane = planeMgr.getInstance ().get (true,this.node);
         this.myPlane.zIndex = 1000;
 
-        this.mutexShow ('operate');
+        this.showContentByName ('operate');
         
         this.myPlane.x = 0;
         this.myPlane.y = -300;
@@ -151,19 +154,20 @@ export default class mainScene extends cc.Component {
 
         this.scoreLabel.string = "0";
 
-        let e : cc.Event.EventCustom = Utils.getInstance ().makeEvent ('start_game');
-        this.node.dispatchEvent (e);
+        EventMgr.dispatch ("start_game");
+    }
 
-        
+    onButtonClicked () : void {
+        EventMgr.dispatch ("start_game");
     }
     
     pauseGame () {
-        this.mutexShow ('pause')
+        this.showContentByName ('pause')
     }
 
     endGame () {
         cc.audioEngine.play (this.loseSound,false,1);
-        this.mutexShow ('end');
+        this.showContentByName ('end');
 
         let endDlgScript : endDlg = this.endNode.getComponent ('endDlg');
         if (endDlgScript) {
@@ -191,9 +195,9 @@ export default class mainScene extends cc.Component {
         bulletMgr.getInstance ().setPrefab (this.BulletPrefab,500);
         propMgr.getInstance ().setPrefab (this.PropPrefab,this.preCreatePropCount);
 
-        this.node.on ('achieve_prop',this.onAchieveProp, this);
-        this.node.on ('plane_dead',this.onPlaneDead, this);
-        this.node.on ('bullet_hit',this.onBulletHit,this);
+        EventMgr.register  ('achieve_prop',this.onAchieveProp.bind(this),this.node);
+        EventMgr.register  ('plane_dead',this.onPlaneDead.bind (this),this.node);
+        EventMgr.register  ('bullet_hit',this.onBulletHit.bind (this),this.node);
         
 
         // let bgNode = this.Enemy.getChildByName ('bg');
@@ -215,7 +219,7 @@ export default class mainScene extends cc.Component {
         this.speedLabel.string = "速度 : " + 0 + "";
         this.powerLabel.string = "威力 : " + 0 + "";
 
-        this.mutexShow ('start')
+        this.showContentByName ('start')
     }
 
     start () {
@@ -233,10 +237,7 @@ export default class mainScene extends cc.Component {
         event.stopPropagation ();
     }
 
-    onPlaneDead (event : cc.Event.EventCustom)  {
-        event.stopPropagation ();
-
-        let plane = event.detail as Plane;
+    onPlaneDead ()  {
         this.isPaused = true;
 
         setTimeout (() => {
@@ -252,7 +253,7 @@ export default class mainScene extends cc.Component {
     }
 
     onBanlanceDlgHomeClicked () {
-        this.mutexShow ('start')
+        this.showContentByName ('start')
     }
 
     onBanlanceDlgRetryClicked () {
@@ -266,7 +267,7 @@ export default class mainScene extends cc.Component {
     }
 
     onStartDlgShareClicked () {
-        this.mutexShow ('start')
+        this.showContentByName ('start')
     }
 
     incScrore (value : number) {

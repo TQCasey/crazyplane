@@ -1,3 +1,4 @@
+import EventMgr from "../event/eventMgr";
 import Utils from "../utils/Utils";
 
 const {ccclass, property} = cc._decorator;
@@ -40,9 +41,8 @@ export default class Prop extends cc.Component {
 
     isDead () {
         cc.audioEngine.play (this.deadSound,false,1);
-        let e : cc.Event.EventCustom = Utils.getInstance ().makeEvent ('achieve_prop',this.getProps ())
-        this.node.dispatchEvent(e);
-
+        
+        EventMgr.dispatch ('achieve_prop',this.getProps ())
         this.node.active = false;
     }
 

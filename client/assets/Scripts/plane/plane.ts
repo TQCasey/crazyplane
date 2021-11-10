@@ -5,6 +5,7 @@ import Prop from '../prop/prop'
 import Bullet from '../bullet/bullet'
 import Utils from '../utils/Utils';
 import bulletMgr from '../bullet/bulletMgr';
+import EventMgr from '../event/eventMgr';
 
 
 @ccclass
@@ -118,7 +119,7 @@ export default class Plane extends cc.Component {
 
     onEnable () {
         this.installTouchEvents ();
-        this.node.on ('start_game',this.onStartGame,this)
+        EventMgr.register ('start_game',this.onStartGame.bind(this),this.node);
     }
 
     onDisable () {
@@ -134,6 +135,7 @@ export default class Plane extends cc.Component {
     }
 
     onStartGame (event : cc.Event.EventCustom) {
+        
         this.setCount (1);
         this.setPower (1);
         this.setSpeed (10);
@@ -280,9 +282,8 @@ export default class Plane extends cc.Component {
         this.deadAni.active = true;
 
         cc.audioEngine.play (this.deadSound,false,1);
-        let e : cc.Event.EventCustom = Utils.getInstance ().makeEvent ('plane_dead',null);
-        this.node.dispatchEvent(e);
 
+        EventMgr.dispatch ('plane_dead');
         this.node.active = false;
     }
 
