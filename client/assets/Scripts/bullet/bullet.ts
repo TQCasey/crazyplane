@@ -13,6 +13,9 @@ export default class Bullet extends cc.Component {
     @property(cc.AudioClip)
     sound : cc.AudioClip = null;
 
+    private userId : number = 0;
+    private isMyPlane : boolean = false;
+
     // LIFE-CYCLE CALLBACKS:
 
     // onLoad () {}
@@ -31,6 +34,19 @@ export default class Bullet extends cc.Component {
 
     setSpeed (speed : number) {
         this.speed = speed;
+    }
+
+    setUserId (userId : number = 0 , isMyPlane : boolean = false) {
+        this.userId = userId;
+        this.isMyPlane = isMyPlane;
+    }
+
+    getUserId () : number {
+        return this.userId;
+    }
+
+    isMyBullet () : boolean {
+        return this.isMyPlane;
     }
 
     getSpeed () {

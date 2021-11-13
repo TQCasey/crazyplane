@@ -110,7 +110,7 @@ export default class Enemy extends cc.Component {
             this.lifeValue  = 0;
             this.isDead ();
         }
-        
+
         this.life.string = Utils.getInstance ().SerializeMoney (nowValue,2) + ""; 
         
         let size = this.node.getContentSize ();
@@ -136,6 +136,10 @@ export default class Enemy extends cc.Component {
             let power = bullet.getPower ();
             this.decLife (power);
             bullet.isHitted ();
+
+            if (bullet.isMyBullet ()) {
+                EventMgr.dispatch ('hit_enemy',power);
+            }
 
         } else {
             let plane : Plane = other.node.getComponent ('plane');

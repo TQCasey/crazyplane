@@ -28,7 +28,6 @@ export default class Prop extends cc.Component {
 
     anim : cc.ActionInterval = null;
 
-
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {

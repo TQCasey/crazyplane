@@ -52,13 +52,16 @@ export default class Plane extends cc.Component {
     @property(cc.AudioClip)
     achieve_sound : cc.AudioClip = null;
 
-    isPaused : boolean = false;
-    undead : number  = 0;
-    power : number = 1;
-    speed : number = 10;
-    count : number = 1;
+    private isPaused : boolean = false;
+    private undead : number  = 0;
+    private power : number = 1;
+    private speed : number = 10;
+    private count : number = 1;
 
-    frameCount : number = 0;
+    private userId : number = 0;
+    private isMyPlane : boolean = false;
+
+    private frameCount : number = 0;
 
     // LIFE-CYCLE CALLBACKS:
 
@@ -71,6 +74,9 @@ export default class Plane extends cc.Component {
     onTouchMove (event : cc.Touch) {
 
         // console.log ("touch move ",event);
+        if (!this.isMyPlane) {
+            return ;
+        }
         
         var pos_hero = this.node.getPosition();
         var pos_move = event.getDelta();
@@ -134,13 +140,21 @@ export default class Plane extends cc.Component {
 
     }
 
-    onStartGame (event : cc.Event.EventCustom) {
+    setUserId (userId : number,isMyPlane : boolean = false) {
+        this.userId = userId;
+        this.isMyPlane = isMyPlane;
+    }
+
+    getUserId () : number {
+        return this.userId;
+    }
+
+    onStartGame () {
         
         this.setCount (1);
         this.setPower (1);
         this.setSpeed (10);
         this.restart ();
-        event.stopPropagation ();
     }
 
     setCount (count : number) {
@@ -176,6 +190,7 @@ export default class Plane extends cc.Component {
     }
 
     onCollisionEnter (other,self) {
+
         // console.log('on collision enter');
         let prop : Prop = other.node.getComponent ('prop');
         if (prop) {
@@ -258,6 +273,7 @@ export default class Plane extends cc.Component {
             let script : Bullet = bullet.getComponent ('bullet');
             script.setPower (this.power);
             script.setSpeed (this.speed);
+            script.setUserId (this.userId,this.isMyPlane);
     
             bullet.parent = this.node.parent
             bullet.active = true;
@@ -282,9 +298,13 @@ export default class Plane extends cc.Component {
         this.deadAni.active = true;
 
         cc.audioEngine.play (this.deadSound,false,1);
-
-        EventMgr.dispatch ('plane_dead');
         this.node.active = false;
+
+        if (!this.isMyPlane) {
+            return ;
+        }
+        
+        EventMgr.dispatch ('plane_dead');
     }
 
     reuse () {

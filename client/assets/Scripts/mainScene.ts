@@ -18,7 +18,11 @@ import Utils from './utils/Utils';
 @ccclass
 export default class mainScene extends cc.Component {
 
-    myPlane : cc.Node = null;
+    // otherPlane : cc.Node = null;
+    // myPlane : cc.Node = null;
+
+    planes : Map<number,cc.Node> = new Map<number,cc.Node> ();
+    myUserId = 10000;
 
     @property(cc.Node)
     PlanePrefab : cc.Node = null;
@@ -113,10 +117,10 @@ export default class mainScene extends cc.Component {
         this.endNode.active     = 'end' == name;
 
         // plane
-        if (this.myPlane) {
-            this.myPlane.active = showPlane;
+        let myPlane = this.getMyPlane ();
+        if (myPlane) {
+            myPlane.active = showPlane;
         }
-
         this.isPaused = 'operate' != name;
     }
 
@@ -140,15 +144,52 @@ export default class mainScene extends cc.Component {
         this.lineData = [];
     }
 
+    putPlane (userId : number) {
+        let plane : cc.Node = this.planes.get (userId);
+        if (plane != null) {
+            planeMgr.getInstance ().put (plane);
+            this.planes.delete (userId);
+        } 
+    }
+
+    getPlane (userId : number,createIfNone : boolean = false) : cc.Node {
+        let plane = planeMgr.getInstance ().get (false,this.node);
+        let planeComp = plane.getComponent (Plane);
+        planeComp.setUserId (userId,userId == this.myUserId);
+        plane.active = true;
+        this.planes.set (userId,plane);
+
+        return plane;
+    }
+
+    getMyPlane (createIfNone = false) : cc.Node {
+        let myPlane : cc.Node = this.planes.get (this.myUserId);
+        if (createIfNone) {
+            if (!myPlane) {
+                myPlane = this.getPlane (this.myUserId,createIfNone);
+            }
+        }
+        return myPlane;
+    }
+
+    putMyPlane () {
+        this.putPlane (this.myUserId);
+    }
+
     startGame () {
         
-        this.myPlane = planeMgr.getInstance ().get (true,this.node);
-        this.myPlane.zIndex = 1000;
+        let myPlane = this.getMyPlane (true);
+        myPlane.zIndex = 1000;
+        myPlane.x = 0;
+        myPlane.y = -300;
+
+        let otherPlane = this.getPlane (110,true);
+        otherPlane.x = 150;
+        otherPlane.y = -300;
+        otherPlane.zIndex = 1000;
 
         this.showContentByName ('operate');
-        
-        this.myPlane.x = 0;
-        this.myPlane.y = -300;
+
         this.lineIndex = 0;
         this.removeAllNodes ();
 
@@ -174,10 +215,7 @@ export default class mainScene extends cc.Component {
             endDlgScript.setScore (parseInt (this.scoreLabel.string) || 0,false);
         }
 
-        planeMgr.getInstance ().put (this.myPlane);
-
-        this.myPlane = null;
-
+        this.putMyPlane ();
     }
 
     onLoad () {
@@ -197,7 +235,7 @@ export default class mainScene extends cc.Component {
 
         EventMgr.register  ('achieve_prop',this.onAchieveProp.bind(this),this.node);
         EventMgr.register  ('plane_dead',this.onPlaneDead.bind (this),this.node);
-        EventMgr.register  ('bullet_hit',this.onBulletHit.bind (this),this.node);
+        EventMgr.register  ('hit_enemy',this.onBulletHit.bind (this),this.node);
         
 
         // let bgNode = this.Enemy.getChildByName ('bg');
@@ -244,7 +282,7 @@ export default class mainScene extends cc.Component {
     }
 
     onBulletHit (score : number) {
-        this.incScrore (score);
+        this.incScore (score);
     }
 
     onBanlanceDlgHomeClicked () {
@@ -265,7 +303,7 @@ export default class mainScene extends cc.Component {
         this.showContentByName ('start')
     }
 
-    incScrore (value : number) {
+    incScore (value : number) {
 
         // stopAction
 

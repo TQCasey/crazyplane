@@ -34,7 +34,7 @@ class EventMgrClass {
         if (event && self.handlers[event]) {
             for (let i in self.handlers[event]) {
                 if (self.handlers[event][i]) {
-                    self.Log ("dispatch event " + event.toString());
+                    // self.Log ("dispatch event " + event.toString());
                     let info = self.handlers[event][i];
                     if (info && (this.isValid (info.obj) || info.obj == 0) && info.callback) {
 
@@ -67,7 +67,7 @@ class EventMgrClass {
         if (event && self.handlers[event]) {
             for (let i in self.handlers[event]) {
                 if (self.handlers[event][i]) {
-                    self.Log ("dispatch event " + event.toString());
+                    // self.Log ("dispatch event " + event.toString());
                     let info = self.handlers[event][i];
                     if (info && (self.isValid(info.obj) || info.obj == 0) && info.callback) {
                         let ret = false;

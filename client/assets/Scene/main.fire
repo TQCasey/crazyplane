@@ -1721,16 +1721,16 @@
       "__uuid__": "5fa0481f-3046-4097-a982-b636fb895bb4"
     },
     "_spriteFrame": {
-      "__uuid__": "88db8bec-1d2d-4628-aaac-587be2b2f524"
+      "__uuid__": "9254be01-e018-4d1e-8140-f00bfc89ae30"
     },
     "_texture": null,
     "_stopped": true,
     "playOnLoad": true,
     "autoRemoveOnFinish": false,
-    "totalParticles": 11200,
+    "totalParticles": 200,
     "duration": 0.1,
     "emissionRate": 7000,
-    "life": 1.6,
+    "life": 1,
     "lifeVar": 0.2,
     "_startColor": {
       "__type__": "cc.Color",
@@ -1802,7 +1802,7 @@
     "rotatePerS": 0,
     "rotatePerSVar": 0,
     "_N$preview": true,
-    "_id": "1c2MLy1u5IuqO3JAKgXa6D"
+    "_id": "6fWNJld05AgJdOfOe2HpXk"
   },
   {
     "__type__": "cc.Node",
