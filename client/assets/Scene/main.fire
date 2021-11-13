@@ -1533,7 +1533,11 @@
       "__id__": 8
     },
     "_enabled": true,
-    "_materials": [],
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
     "_armatureName": "",
     "_animationName": "",
     "_preCacheMode": -1,

@@ -50,7 +50,7 @@ class EventMgrClass {
                         return ret; // result that brought from responder 
                     }
 
-                    if (info.obj && !this.isValid (info.obj)) {
+                    if (info.obj && !this.isValid (info.obj) && self.handlers[event] && self.handlers[event] [i]) {
                         delete self.handlers[event][i];
                     }
                 }
@@ -76,6 +76,7 @@ class EventMgrClass {
                             if (info.auto) {
                                 // auto release 
                                 self.removeListener(info.callback);
+                                return ret;
                             }
                         });
 
@@ -86,7 +87,7 @@ class EventMgrClass {
                         }
                     }
 
-                    if (info.obj && self.isValid (info.obj)) {
+                    if (info.obj && !this.isValid (info.obj) && self.handlers[event] && self.handlers[event] [i]) {
                         delete self.handlers[event][i];
                     }
                 }
@@ -116,7 +117,7 @@ class EventMgrClass {
     }
 
     // register event  
-    public register (event : string, callback : Function, obj : cc.Node = null, auto : boolean = true) {
+    public register (event : string, callback : Function, obj : cc.Node = null, auto : boolean = false) {
 
         let self : EventMgrClass = this;
 
@@ -138,7 +139,7 @@ class EventMgrClass {
         this.register(event, callback, obj, true);
     }
 
-    public registerWithoutObj (event : string, callback : Function, auto : boolean = true) {
+    public registerWithoutObj (event : string, callback : Function, auto : boolean = false) {
         
         let self : EventMgrClass = this;
 

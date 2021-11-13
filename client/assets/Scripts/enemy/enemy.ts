@@ -2,6 +2,7 @@
 import Utils from '../utils//Utils'
 import Bullet from '../bullet/bullet'
 import Plane from '../plane/plane'
+import EventMgr from '../event/eventMgr';
 
 const {ccclass, property} = cc._decorator;
 
@@ -69,8 +70,7 @@ export default class Enemy extends cc.Component {
 
         cc.audioEngine.play (this.deadSound,false,1);
 
-        // let callback = this.eventMap ['dead'];
-        // callback && callback (this.node);
+        
     }
 
     reuse () {

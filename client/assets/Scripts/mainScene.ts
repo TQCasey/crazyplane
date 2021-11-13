@@ -226,15 +226,13 @@ export default class mainScene extends cc.Component {
 
     }
 
-    onAchieveProp (event : cc.Event.EventCustom) {
+    onAchieveProp (props : Prop) {
 
-        let props = event.detail as Prop;
         // // props added 
         this.incSpeed (props.speed);
         this.incPower (props.power);
         this.incCount (props.count);
         this.incUndead (props.undead);
-        event.stopPropagation ();
     }
 
     onPlaneDead ()  {
@@ -245,11 +243,8 @@ export default class mainScene extends cc.Component {
         },1000);
     }
 
-    onBulletHit (event : cc.Event.EventCustom) {
-        event.stopPropagation ();
-        
-        // this.incScrore (score);
-
+    onBulletHit (score : number) {
+        this.incScrore (score);
     }
 
     onBanlanceDlgHomeClicked () {
