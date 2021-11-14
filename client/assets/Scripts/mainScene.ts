@@ -127,7 +127,7 @@ export default class mainScene extends cc.Component {
     puToPool (node : any) {
         let name = node.name;
         if (name == 'prop') {
-            planeMgr.getInstance ().put (node);
+            propMgr.getInstance ().put (node);
         } else if (name == 'enemy') {
             enemyMgr.getInstance ().put (node);
         }
@@ -234,7 +234,7 @@ export default class mainScene extends cc.Component {
         propMgr.getInstance ().setPrefab (this.PropPrefab,this.preCreatePropCount);
 
         EventMgr.register  ('achieve_prop',this.onAchieveProp.bind(this),this.node);
-        EventMgr.register  ('plane_dead',this.onPlaneDead.bind (this),this.node);
+        EventMgr.register  ('game_over',this.onPlaneDead.bind (this),this.node);
         EventMgr.register  ('hit_enemy',this.onBulletHit.bind (this),this.node);
         
 

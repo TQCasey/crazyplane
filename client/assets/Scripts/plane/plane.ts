@@ -62,6 +62,7 @@ export default class Plane extends cc.Component {
     private isMyPlane : boolean = false;
 
     private frameCount : number = 0;
+    private m_Listener : Function = null;
 
     // LIFE-CYCLE CALLBACKS:
 
@@ -109,6 +110,9 @@ export default class Plane extends cc.Component {
         node.on ('touchstart',this.onTouchStart,this);
         node.on ('touchmove',this.onTouchMove,this);
         node.on ('touchend',this.onTouchEnd,this);
+
+
+        EventMgr.register  ('game_over',this.m_Listener,this.node);
     }
 
     uninstallTouchEvents () {
@@ -116,11 +120,14 @@ export default class Plane extends cc.Component {
         node.off ('touchstart',this.onTouchStart,this);
         node.off ('touchmove',this.onTouchMove,this);
         node.off ('touchend',this.onTouchEnd,this);
+
+        EventMgr.removeListener (this.m_Listener);
     }
     
     onLoad () {
         this.frameCount     = 0;
         this.shadow.zIndex = -1;
+        this.m_Listener     = this.onPlaneDead.bind (this);
     }
 
     onEnable () {
@@ -138,6 +145,15 @@ export default class Plane extends cc.Component {
 
     start () {
 
+    }
+
+    onPlaneDead () {
+        this.isPaused = true;
+        this.body.active = false;
+        this.deadAni.active = true;
+
+        cc.audioEngine.play (this.deadSound,false,1);
+        this.node.active = false;
     }
 
     setUserId (userId : number,isMyPlane : boolean = false) {
@@ -304,7 +320,7 @@ export default class Plane extends cc.Component {
             return ;
         }
         
-        EventMgr.dispatch ('plane_dead');
+        EventMgr.dispatch ('game_over');
     }
 
     reuse () {
